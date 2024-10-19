@@ -95,7 +95,7 @@ export const zerox = async ({
     for (const image of images) {
       const imagePath = path.join(tempDirectory, image);
       try {
-        const { content, inputTokens, outputTokens } = await getCompletion({
+        const { content, inputTokens, outputTokens, boundingBoxes } = await getCompletion({
           apiKey: openaiAPIKey,
           imagePath,
           llmParams,
@@ -112,6 +112,19 @@ export const zerox = async ({
 
         // Add all markdown results to array
         aggregatedMarkdown.push(formattedMarkdown);
+
+        // Add bounding box coordinates to the markdown
+        if (boundingBoxes && boundingBoxes.length) {
+          const boundingBoxMarkdown = boundingBoxes
+            .map(
+              (box: any) =>
+                `![Image](data:image/png;base64,${box.image})\n\nBounding Box: ${JSON.stringify(
+                  box.bounding_box
+                )}`
+            )
+            .join("\n\n");
+          aggregatedMarkdown.push(boundingBoxMarkdown);
+        }
       } catch (error) {
         console.error(`Failed to process image ${image}:`, error);
         throw error;
@@ -122,7 +135,7 @@ export const zerox = async ({
     const processPage = async (image: string): Promise<string | null> => {
       const imagePath = path.join(tempDirectory, image);
       try {
-        const { content, inputTokens, outputTokens } = await getCompletion({
+        const { content, inputTokens, outputTokens, boundingBoxes } = await getCompletion({
           apiKey: openaiAPIKey,
           imagePath,
           llmParams,
@@ -138,6 +151,18 @@ export const zerox = async ({
         priorPage = formattedMarkdown;
 
         // Add all markdown results to array
+        if (boundingBoxes && boundingBoxes.length) {
+          const boundingBoxMarkdown = boundingBoxes
+            .map(
+              (box: any) =>
+                `![Image](data:image/png;base64,${box.image})\n\nBounding Box: ${JSON.stringify(
+                  box.bounding_box
+                )}`
+            )
+            .join("\n\n");
+          return `${formattedMarkdown}\n\n${boundingBoxMarkdown}`;
+        }
+
         return formattedMarkdown;
       } catch (error) {
         console.error(`Failed to process image ${image}:`, error);

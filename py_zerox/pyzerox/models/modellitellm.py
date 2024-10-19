@@ -102,6 +102,7 @@ class litellmmodel(BaseModel):
                     content=response["choices"][0]["message"]["content"],
                     input_tokens=response["usage"]["prompt_tokens"],
                     output_tokens=response["usage"]["completion_tokens"],
+                    bounding_boxes=response["choices"][0]["message"].get("bounding_boxes", []),
                 )
             return response
         

@@ -58,10 +58,14 @@ export const getCompletion = async ({
 
     const data = response.data;
 
+    // Extract bounding box coordinates if available
+    const boundingBoxes = data.choices[0].message.bounding_boxes || [];
+
     return {
       content: data.choices[0].message.content,
       inputTokens: data.usage.prompt_tokens,
       outputTokens: data.usage.completion_tokens,
+      boundingBoxes, // Include bounding box coordinates in the response
     };
   } catch (err) {
     console.error("Error in OpenAI completion", err);

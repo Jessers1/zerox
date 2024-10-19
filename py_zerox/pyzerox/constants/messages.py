@@ -54,3 +54,7 @@ class Messages:
     FAILED_TO_SAVE_FILE = """Failed to save file to local drive"""
 
     FAILED_TO_PROCESS_IMAGE = """Failed to process image"""
+
+    BOUNDING_BOX_RETRIEVAL_ERROR = """Failed to retrieve bounding box coordinates"""
+
+    BOUNDING_BOX_ADDITION_ERROR = """Failed to add bounding box coordinates to the markdown"""

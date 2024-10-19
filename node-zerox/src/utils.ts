@@ -63,6 +63,10 @@ export const formatMarkdown = (text: string) => {
     }
   }
 
+  // Handle bounding box coordinates
+  const boundingBoxRegex = /Bounding Box: \{.*?\}/g;
+  formattedMarkdown = formattedMarkdown.replace(boundingBoxRegex, "");
+
   return formattedMarkdown;
 };
 
